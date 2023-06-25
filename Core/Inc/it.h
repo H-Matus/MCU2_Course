@@ -8,6 +8,7 @@
 #ifndef INC_IT_H_
 #define INC_IT_H_
 
+void SysTick_Handler(void);
 
 
 #endif /* INC_IT_H_ */
