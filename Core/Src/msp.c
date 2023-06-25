@@ -5,7 +5,7 @@
  *      Author: Admin
  */
 
-#include "msp.h"
+#include "stm32f4xx_hal.h"
 
 /**
  * @brief   Starting low level hardware specific inits. 
@@ -38,9 +38,10 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 {
     GPIO_InitTypeDef gpio_uart;
 
-    /* 1. Enable the clock for the USART2 peripheral. */
+    /* 1. Enable the clock for the USART2 peripheral, as well as for other peripherals such as GPIOA. */
     /* Take a look at the HAL_RCC header file. */
     __HAL_RCC_USART2_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
 
     /* 2. Do the pin muxing configurations. */
 
