@@ -5,9 +5,9 @@
  *      Author: Admin
  */
 
+#include <main.h>
 #include <string.h>
-#include "stm32f4xx.h"
-#include "main.h"
+#include "stm32f4xx_hal.h"
 
 void SystemClockConfig(void);
 void UART2_Init(void);
@@ -29,7 +29,7 @@ int main(void)
         Error_handler();
     }
 
-    while(1);
+    while(1) { };
 
 	return 0;
 }
@@ -49,7 +49,7 @@ void UART2_Init(void)
     huart2.Init.Mode = UART_MODE_TX_RX;
     huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
     huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-    if ( HAL_UART_Init() != HAL_OK )
+    if ( HAL_UART_Init(&huart2) != HAL_OK )
     {
         // There is a problem
         Error_handler();
