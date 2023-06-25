@@ -8,6 +8,8 @@
 #ifndef INC_IT_H_
 #define INC_IT_H_
 
+#include "main.h"
+
 void SysTick_Handler(void);
 
 
