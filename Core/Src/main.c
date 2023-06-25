@@ -29,6 +29,8 @@ int main(void)
         Error_handler();
     }
 
+    while(1);
+
 	return 0;
 }
 
