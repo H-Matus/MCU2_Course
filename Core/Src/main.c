@@ -5,6 +5,7 @@
  *      Author: Admin
  */
 
+#include <stdint.h>
 #include <main.h>
 #include <string.h>
 #include "stm32f4xx_hal.h"
@@ -24,7 +25,26 @@ int main(void)
 	UART2_Init();
 
     uint16_t len_of_data = strlen(user_data);
-    if( HAL_UART_Transmit(&huart2, (uint8_t*)user_data, len_of_data, HAL_MAX_DELAY) != HAL_OK )
+    uint8_t rcvd_data;
+    uint8_t data_buffer[100];
+    uint32_t count = 0;
+
+    while(1)
+    {
+        HAL_UART_Receive(&huart2, &rcvd_data, 1, HAL_MAX_DELAY);
+        if(rcvd_data == '\r')
+        {
+            break;
+        }
+        else
+        {
+            data_buffer[count++] = rcvd_data;
+        }
+
+    }
+
+    data_buffer[count++] = '\r';
+    if( HAL_UART_Transmit(&huart2, data_buffer, count, HAL_MAX_DELAY) != HAL_OK )
     {
         Error_handler();
     }
