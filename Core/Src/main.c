@@ -13,6 +13,7 @@
 void SystemClockConfig(void);
 void UART2_Init(void);
 void Error_handler(void);
+uint8_t convert_to_capital(uint8_t);
 
 UART_HandleTypeDef huart2;
 
@@ -38,7 +39,7 @@ int main(void)
         }
         else
         {
-            data_buffer[count++] = rcvd_data;
+            data_buffer[count++] = convert_to_capital(rcvd_data);
         }
 
     }
@@ -79,4 +80,16 @@ void UART2_Init(void)
 void Error_handler(void)
 {
     while(1);
+}
+
+uint8_t convert_to_capital(uint8_t data)
+{
+    /* ASCII manipulations: */
+    /* Checking if the letter is lowercase: */
+    if( data >= 'a' && data <= 'z' )
+    {
+        data = data - ('a' - 'A');
+    }
+
+    return data;
 }
