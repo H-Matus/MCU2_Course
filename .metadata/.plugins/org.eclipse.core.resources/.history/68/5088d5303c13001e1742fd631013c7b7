@@ -1,0 +1,14 @@
+/*
+ * main.c
+ *
+ *  Created on: Jun 25, 2023
+ *      Author: Admin
+ */
+
+int main(void)
+{
+	HAL_Init();
+	SystemClockConfig();
+
+	return 0;
+}

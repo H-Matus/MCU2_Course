@@ -1,0 +1,30 @@
+/*
+ * main.c
+ *
+ *  Created on: Jun 25, 2023
+ *      Author: Admin
+ */
+
+void SystemClockConfig(void);
+void UART2_Init(void);
+
+HandleTypeDef huart2;
+
+int main(void)
+{
+	HAL_Init();
+	SystemClockConfig();
+	UART2_Init();
+
+	return 0;
+}
+
+void SystemClockConfig(void)
+{
+
+}
+
+void UART2_Init(void)
+{
+
+}

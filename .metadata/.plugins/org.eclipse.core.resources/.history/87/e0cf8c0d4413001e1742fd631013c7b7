@@ -1,0 +1,21 @@
+/*
+ * main.c
+ *
+ *  Created on: Jun 25, 2023
+ *      Author: Admin
+ */
+
+#include "stm32f4xx.h"
+#include "main.h"
+
+void SystemClockConfig(void);
+void UART2_Init(void);
+
+int main(void)
+{
+	HAL_Init();
+	SystemClockConfig();
+	UART2_Init();
+
+	return 0;
+}
