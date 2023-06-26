@@ -15,18 +15,18 @@
 
 void UART2_Init(void);
 void Error_handler(void);
+void SystemClock_Config(uint8_t clock_freq);
 
 UART_HandleTypeDef huart2;
 
 int main(void)
 {
-    RCC_OscInitTypeDef osc_init;
-    RCC_ClkInitTypeDef clk_init;
-    uint8_t msg[100];
 
 	HAL_Init();
 
 	UART2_Init();
+
+    SystemClock_Config();
 
     
     while(1) { };
@@ -34,9 +34,55 @@ int main(void)
 	return 0;
 }
 
-void SystemClockConfig(void)
+void SystemClock_Config(uint8_t clock_freq)
 {
+    RCC_OscInitTypeDef osc_init;
+    RCC_ClkInitTypeDef clk_init;
 
+    /* Setting up HSI */
+    osc_init.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+    osc_init.HSIState = RCC_HSI_ON;
+    osc_init.HSICalibrationValue = 16;
+    osc_init.PLL.PLLState = RCC_PLL_ON;
+    osc_init.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+
+    switch(clock_freq)
+    {
+        case SYS_CLOCK_FREQ_50_MHZ:
+        {
+            osc_init.PLL.PLLM = 16;
+            osc_init.PLL.PLLN = 100;
+            osc_init.PLL.PLLP = 2;
+            osc_init.PLL.PLLQ = 2;
+            break;
+        }
+        case SYS_CLOCK_FREQ_84_MHZ:
+        {
+            osc_init.PLL.PLLM = 16;
+            osc_init.PLL.PLLN = 168;
+            osc_init.PLL.PLLP = 2;
+            osc_init.PLL.PLLQ = 2;
+            break;
+        }
+        case SYS_CLOCK_FREQ_120_MHZ:
+        {
+            osc_init.PLL.PLLM = 16;
+            osc_init.PLL.PLLN = 240;
+            osc_init.PLL.PLLP = 2;
+            osc_init.PLL.PLLQ = 2;
+            break;
+        }
+        default:
+        {
+            return;
+        }
+    }
+
+    if( HAL_RCC_OscConfig(&osc_init) != HAL_OK )
+    {
+        Error_handler();
+    }
+    
 }
 
 void UART2_Init(void)
