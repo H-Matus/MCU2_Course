@@ -5,6 +5,7 @@
 void SystemClockConfig( uint8_t clock_freq );
 void GPIO_Init(void);
 void Error_handler(void);
+void TIMER2_Init(void);
 
 TIM_HandleTypeDef htimer2;
 
@@ -15,6 +16,8 @@ int main(void)
 	SystemClockConfig();
 
 	GPIO_Init();
+
+    TIMER2_Init();
 
     while(1);
 
@@ -102,7 +105,7 @@ void SystemClockConfig( uint8_t clock_freq )
         /* Configure the systick */
         HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
 
-        /* SysTick_IRQn interrupot configuration */
+        /* SysTick_IRQn interrupt configuration */
         HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
     }
 }
@@ -115,6 +118,30 @@ void GPIO_Init(void)
 	ledgpio.Mode = GPIO_MODE_OUTPUT_PP;
 	ledgpio.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOA,&ledgpio);
+}
+
+void TIMER2_Init(void)
+{
+    TIM_IC_InitTypeDef timer2IC_Config;
+
+    htimer2.Instance = TIM2;
+    htimer2.Init.CounterMode = TIM_COUNTERMODE_UP;
+    htimer2.Init.Period = 0xFFFFFFFF;
+    htimer2.Init.Prescaler = 1;
+    if ( HAL_TIM_IC_Init(&htimer2) != HAL_OK )
+    {
+        Error_handler();
+    }
+
+    timer2IC_Config.ICFilter = 0;
+    timer2IC_Config.ICPolarity = TIM_ICPOLARITY_RISING;
+    timer2IC_Config.ICPrescaler = TIM_ICPSC_DIV1;
+    timer2IC_Config.ICSelection = TIM_ICSELECTION_DIRECTTI;
+    if ( HAL_TIM_IC_ConfigChannel(&htimer2, &timer2IC_Config, TIM_CHANNEL_1) != HAL_OK )
+    {
+        Error_handler();
+    }
+
 }
 
 void Error_handler(void)
