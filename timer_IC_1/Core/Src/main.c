@@ -1,6 +1,6 @@
+#include <main.h>
 #include<string.h>
 #include "stm32f4xx_hal.h"
-#include "main_app.h"
 
 void SystemClockConfig( uint8_t clock_freq );
 void GPIO_Init(void);
@@ -13,7 +13,7 @@ int main(void)
 {
 	HAL_Init();
 
-	SystemClockConfig();
+	SystemClockConfig(SYS_CLOCK_FREQ_50_MHZ);
 
 	GPIO_Init();
 
@@ -40,47 +40,44 @@ void SystemClockConfig( uint8_t clock_freq )
     {
         case SYS_CLOCK_FREQ_50_MHZ:
         {
-            osc_init.PLL.PLLM = 8;
-            osc_init.PLL.PLLN = 50;
-            osc_init.PLL.PLLP = RCC_PLLP_DIV2;
-            osc_init.PLL.PLLQ = 2;
-            osc_init.PLL.PLLR = 2;
+            Osc_Init.PLL.PLLM = 8;
+            Osc_Init.PLL.PLLN = 50;
+            Osc_Init.PLL.PLLP = RCC_PLLP_DIV2;
+            Osc_Init.PLL.PLLQ = 2;
 
-            clk_init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-            clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-            clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
-            clk_init.APB1CLKDivider = RCC_HCLK_DIV2;
-            clk_init.APB2CLKDivider = RCC_HCLK_DIV1;
+            Clk_Init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+            Clk_Init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+            Clk_Init.AHBCLKDivider = RCC_SYSCLK_DIV1;
+            Clk_Init.APB1CLKDivider = RCC_HCLK_DIV2;
+            Clk_Init.APB2CLKDivider = RCC_HCLK_DIV1;
             break;
         }
         case SYS_CLOCK_FREQ_84_MHZ:
         {
-            osc_init.PLL.PLLM = 8;
-            osc_init.PLL.PLLN = 84;
-            osc_init.PLL.PLLP = RCC_PLLP_DIV2;
-            osc_init.PLL.PLLQ = 2;
-            osc_init.PLL.PLLR = 2;
+            Osc_Init.PLL.PLLM = 8;
+            Osc_Init.PLL.PLLN = 84;
+            Osc_Init.PLL.PLLP = RCC_PLLP_DIV2;
+            Osc_Init.PLL.PLLQ = 2;
 
-            clk_init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-            clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-            clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
-            clk_init.APB1CLKDivider = RCC_HCLK_DIV2;
-            clk_init.APB2CLKDivider = RCC_HCLK_DIV1;
+            Clk_Init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+            Clk_Init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+            Clk_Init.AHBCLKDivider = RCC_SYSCLK_DIV1;
+            Clk_Init.APB1CLKDivider = RCC_HCLK_DIV2;
+            Clk_Init.APB2CLKDivider = RCC_HCLK_DIV1;
             break;
         }
         case SYS_CLOCK_FREQ_120_MHZ:
         {
-            osc_init.PLL.PLLM = 8;
-            osc_init.PLL.PLLN = 120;
-            osc_init.PLL.PLLP = RCC_PLLP_DIV2;
-            osc_init.PLL.PLLQ = 2;
-            osc_init.PLL.PLLR = 2;
+            Osc_Init.PLL.PLLM = 8;
+            Osc_Init.PLL.PLLN = 120;
+            Osc_Init.PLL.PLLP = RCC_PLLP_DIV2;
+            Osc_Init.PLL.PLLQ = 2;
 
-            clk_init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-            clk_init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-            clk_init.AHBCLKDivider = RCC_SYSCLK_DIV1;
-            clk_init.APB1CLKDivider = RCC_HCLK_DIV4;
-            clk_init.APB2CLKDivider = RCC_HCLK_DIV2;
+            Clk_Init.ClockType = RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+            Clk_Init.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+            Clk_Init.AHBCLKDivider = RCC_SYSCLK_DIV1;
+            Clk_Init.APB1CLKDivider = RCC_HCLK_DIV4;
+            Clk_Init.APB2CLKDivider = RCC_HCLK_DIV2;
             break;
         }
         default:
