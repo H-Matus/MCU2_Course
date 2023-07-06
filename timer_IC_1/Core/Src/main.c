@@ -6,6 +6,7 @@ void SystemClockConfig( uint8_t clock_freq );
 void GPIO_Init(void);
 void Error_handler(void);
 void TIMER2_Init(void);
+void LSE_Configuration(void);
 
 TIM_HandleTypeDef htimer2;
 
@@ -19,7 +20,9 @@ int main(void)
 
     TIMER2_Init();
 
-    while(1);
+    LSE_Configuration();
+
+    while(1) {}
 
 	return 0;
 }
@@ -138,6 +141,24 @@ void TIMER2_Init(void)
     {
         Error_handler();
     }
+
+}
+
+void LSE_Configuration(void)
+{
+    /* Activating LSE oscillator */
+    RCC_OscInitTypeDef Osc_Init;
+
+    Osc_Init.OscillatorType = RCC_OSCILLATORTYPE_LSE;
+    Osc_Init.LSEState = RCC_LSE_ON;
+
+    if ( HAL_RCC_OscConfig(&Osc_Init) != HAL_OK )
+    {
+        Error_handler();
+    }
+
+    /* Supplying the LSE oscillator via GPIO */
+    HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_LSE, RCC_MCODIV_1);
 
 }
 
