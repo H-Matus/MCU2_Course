@@ -1,2 +1,3 @@
 msp.c:12:6:HAL_MspInit	1
 msp.c:27:6:HAL_TIM_IC_MspInit	1
+msp.c:47:6:HAL_UART_MspInit	1

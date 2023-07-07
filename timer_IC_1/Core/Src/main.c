@@ -58,7 +58,7 @@ int main(void)
             user_signal_freq = 1 / user_signal_time_period;
 
             sprintf(user_msg, "Frequency of the signal applied = %f\r\n", user_signal_freq);
-            HAL_UART_Transmit(&huart2, user_msg, strlen(user_msg), HAL_MAX_DELAY);
+            HAL_UART_Transmit(&huart2, (uint8_t*)user_msg, strlen(user_msg), HAL_MAX_DELAY);
 
             is_capture_done = FALSE;
         }
