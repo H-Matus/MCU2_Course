@@ -5,11 +5,13 @@
 
 void SystemClockConfig( uint8_t clock_freq );
 void GPIO_Init(void);
+void UART2_Init(void);
 void Error_handler(void);
 void TIMER2_Init(void);
 void LSE_Configuration(void);
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim);
 
+UART_HandleTypeDef huart2;
 TIM_HandleTypeDef htimer2;
 uint32_t input_captures[2] = {0};
 uint8_t count = 0;
@@ -29,6 +31,8 @@ int main(void)
 	SystemClockConfig(SYS_CLOCK_FREQ_50_MHZ);
 
 	GPIO_Init();
+
+	UART2_Init();
 
     TIMER2_Init();
 
@@ -152,6 +156,23 @@ void GPIO_Init(void)
 	ledgpio.Mode = GPIO_MODE_OUTPUT_PP;
 	ledgpio.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOA,&ledgpio);
+}
+
+void UART2_Init(void)
+{
+    huart2.Instance = USART2;
+    huart2.Init.BaudRate = 115200;
+    huart2.Init.WordLength = UART_WORDLENGTH_8B;
+    huart2.Init.StopBits = UART_STOPBITS_1;
+    huart2.Init.Parity = UART_PARITY_NONE;
+    huart2.Init.Mode = UART_MODE_TX_RX;
+    huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+    if ( HAL_UART_Init(&huart2) != HAL_OK )
+    {
+        // There is a problem
+        Error_handler();
+    }
 }
 
 void TIMER2_Init(void)
