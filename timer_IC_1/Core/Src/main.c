@@ -1,5 +1,6 @@
 #include <main.h>
-#include<string.h>
+#include <string.h>
+#include <stdio.h>
 #include "stm32f4xx_hal.h"
 
 void SystemClockConfig( uint8_t clock_freq );
@@ -7,11 +8,22 @@ void GPIO_Init(void);
 void Error_handler(void);
 void TIMER2_Init(void);
 void LSE_Configuration(void);
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim);
 
 TIM_HandleTypeDef htimer2;
+uint32_t input_captures[2] = {0};
+uint8_t count = 0;
+uint8_t is_capture_done = FALSE;
 
 int main(void)
 {
+    uint32_t capture_diff = 0;
+    double timer2_cnt_freq = 0;
+    double timer2_cnt_res = 0;
+    double user_signal_time_period = 0;
+    double user_signal_freq = 0;
+    char user_msg[100];
+
 	HAL_Init();
 
 	SystemClockConfig(SYS_CLOCK_FREQ_50_MHZ);
@@ -22,7 +34,28 @@ int main(void)
 
     LSE_Configuration();
 
-    while(1) {}
+    while(1)
+    {
+        if(is_capture_done)
+        {
+            if(input_captures[1] > input_captures[0])
+            {
+                capture_diff = input_captures[1] - input_captures[0];
+            }
+            else
+            {
+                capture_diff = (0xFFFFFFFF - input_captures[0]) + input_captures[1];
+            }
+
+            /* After this we can calculate the time period of the applied input signal. */
+            timer2_cnt_freq = (HAL_RCC_GetPCLK1Freq() * 2) / htimer2.Init.Prescaler;
+            timer2_cnt_res = 1 / timer2_cnt_freq;
+            user_signal_time_period = capture_diff * timer2_cnt_res;
+            user_signal_freq = 1 / user_signal_time_period;
+
+            sprintf(user_msg, "Frequency of the signal applied = %f\r\n", user_signal_freq);
+        }
+    }
 
 	return 0;
 }
@@ -149,6 +182,22 @@ void LSE_Configuration(void)
 {
     /* Supplying the LSE oscillator via GPIO */
     HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_LSE, RCC_MCODIV_1);
+}
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+    if(count == 1)
+    {
+        input_captures[0] = __HAL_TIM_GET_COMPARE(htim, TIM_CHANNEL_1);
+        count++;
+    }
+    else if(count == 2)
+    {
+        input_captures[1] = __HAL_TIM_GET_COMPARE(htim, TIM_CHANNEL_1);
+        count = 1;
+        is_capture_done = TRUE;
+    }
+
 }
 
 void Error_handler(void)
