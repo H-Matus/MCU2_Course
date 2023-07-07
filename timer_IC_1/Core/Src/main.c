@@ -58,6 +58,9 @@ int main(void)
             user_signal_freq = 1 / user_signal_time_period;
 
             sprintf(user_msg, "Frequency of the signal applied = %f\r\n", user_signal_freq);
+            HAL_UART_Transmit(&huart2, user_msg, strlen(user_msg), HAL_MAX_DELAY);
+
+            is_capture_done = FALSE;
         }
     }
 
@@ -207,18 +210,20 @@ void LSE_Configuration(void)
 
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
-    if(count == 1)
+    if(!is_capture_done)
     {
-        input_captures[0] = __HAL_TIM_GET_COMPARE(htim, TIM_CHANNEL_1);
-        count++;
+        if(count == 1)
+        {
+            input_captures[0] = __HAL_TIM_GET_COMPARE(htim, TIM_CHANNEL_1);
+            count++;
+        }
+        else if(count == 2)
+        {
+            input_captures[1] = __HAL_TIM_GET_COMPARE(htim, TIM_CHANNEL_1);
+            count = 1;
+            is_capture_done = TRUE;
+        }
     }
-    else if(count == 2)
-    {
-        input_captures[1] = __HAL_TIM_GET_COMPARE(htim, TIM_CHANNEL_1);
-        count = 1;
-        is_capture_done = TRUE;
-    }
-
 }
 
 void Error_handler(void)
