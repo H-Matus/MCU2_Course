@@ -52,7 +52,7 @@ int main(void)
             }
 
             /* After this we can calculate the time period of the applied input signal. */
-            timer2_cnt_freq = (HAL_RCC_GetPCLK1Freq() * 2) / htimer2.Init.Prescaler;
+            timer2_cnt_freq = (HAL_RCC_GetPCLK1Freq() * 2) / (htimer2.Init.Prescaler + 1);
             timer2_cnt_res = 1 / timer2_cnt_freq;
             user_signal_time_period = capture_diff * timer2_cnt_res;
             user_signal_freq = 1 / user_signal_time_period;
