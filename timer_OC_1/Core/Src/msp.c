@@ -22,6 +22,11 @@ void HAL_MspInit(void)
     HAL_NVIC_SetPriority(UsageFault_IRQn, 0, 0);
 }
 
+void HAL_TIM_OC_MspInit(void)
+{
+
+}
+
 void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 {
     /* Low level USART2 inits. */
