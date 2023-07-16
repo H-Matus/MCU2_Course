@@ -5,9 +5,9 @@
  *      Author: Admin
  */
 
+#include <main.h>
 #include <string.h>
 #include "stm32f4xx_hal.h"
-#include "main.h"
 
 void GPIO_Init(void);
 void Error_handler(void);
@@ -17,6 +17,11 @@ void SystemClock_Config_HSE(uint8_t clock_freq);
 
 TIM_HandleTypeDef htimer2;
 UART_HandleTypeDef huart2;
+
+uint32_t pulse1_value = 25000;  /* to produce 500Hz */
+uint32_t pulse2_value = 12500;  /* to produce 1kHz */
+uint32_t pulse3_value = 6250;   /* to produce 2kHz */
+uint32_t pulse4_value = 3125;   /* to produce 4kHz */
 
 int main(void)
 {
@@ -57,6 +62,41 @@ void Error_handler(void)
 
 void TIMER2_Init(void)
 {
+    TIM_OC_InitTypeDef tim2OC_Init;
+
+    htimer2.Instance = TIM2;
+    htimer2.Init.Period = 0xFFFFFFFF;
+    htimer2.Init.Prescaler = 1;
+    if ( HAL_OK != HAL_TIM_OC_Init(&htimer2) )
+    {
+        Error_handler();
+    }
+
+    tim2OC_Init.OCMode = TIM_OCMODE_TOGGLE;
+    tim2OC_Init.OCPolarity = TIM_OCPOLARITY_HIGH;
+    tim2OC_Init.Pulse = pulse1_value;
+    if ( HAL_OK != HAL_TIM_OC_ConfigChannel(&htimer2, &tim2OC_Init, TIM_CHANNEL_1) )
+    {
+        Error_handler();
+    }
+
+    tim2OC_Init.Pulse = pulse2_value;
+    if ( HAL_OK != HAL_TIM_OC_ConfigChannel(&htimer2, &tim2OC_Init, TIM_CHANNEL_2) )
+    {
+        Error_handler();
+    }
+
+    tim2OC_Init.Pulse = pulse3_value;
+    if ( HAL_OK != HAL_TIM_OC_ConfigChannel(&htimer2, &tim2OC_Init, TIM_CHANNEL_3) )
+    {
+        Error_handler();
+    }
+
+    tim2OC_Init.Pulse = pulse4_value;
+    if ( HAL_OK != HAL_TIM_OC_ConfigChannel(&htimer2, &tim2OC_Init, TIM_CHANNEL_4) )
+    {
+        Error_handler();
+    }
 
 }
 
