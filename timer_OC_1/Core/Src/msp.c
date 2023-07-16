@@ -5,7 +5,7 @@
  *      Author: Admin
  */
 
-#include "main.h"
+#include <main.h>
 
 void HAL_MspInit(void)
 {
