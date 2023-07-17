@@ -190,7 +190,7 @@ void SystemClock_Config_HSE(uint8_t clock_freq)
             Clock_Init.APB2CLKDivider = RCC_HCLK_DIV2;
             flash_latency = 3;
             break;
-        case default:
+        default:
             break;
     }
 
@@ -221,7 +221,7 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
     /* TIM3_CH1 toggling with frequency = 500Hz */
     if(HAL_TIM_ACTIVE_CHANNEL_1 == htim->Channel)
     {
-        ccr_content = HAL_TIM_ReadCapturedValue(htim);
+        ccr_content = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
         __HAL_TIM_SetCompare(htim, TIM_CHANNEL_1, (ccr_content + pulse1_value));
 
     }
@@ -229,7 +229,7 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
     /* TIM3_CH2 toggling with frequency = 1kHz. */
     if(HAL_TIM_ACTIVE_CHANNEL_2 == htim->Channel)
     {
-        ccr_content = HAL_TIM_ReadCapturedValue(htim);
+        ccr_content = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
         __HAL_TIM_SetCompare(htim, TIM_CHANNEL_2, (ccr_content + pulse2_value));
 
     }
@@ -237,7 +237,7 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
     /* TIM3_CH3 toggling with frequency = 2kHz. */
     if(HAL_TIM_ACTIVE_CHANNEL_3 == htim->Channel)
     {
-        ccr_content = HAL_TIM_ReadCapturedValue(htim);
+        ccr_content = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_3);
         __HAL_TIM_SetCompare(htim, TIM_CHANNEL_3, (ccr_content + pulse3_value));
  
     }
@@ -245,7 +245,7 @@ void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
     /* TIM3_CH4 toggling with frequency = 4kHz. */
     if(HAL_TIM_ACTIVE_CHANNEL_4 == htim->Channel)
     {
-        ccr_content = HAL_TIM_ReadCapturedValue(htim);
+        ccr_content = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_4);
         __HAL_TIM_SetCompare(htim, TIM_CHANNEL_4, (ccr_content + pulse4_value));
 
     }
