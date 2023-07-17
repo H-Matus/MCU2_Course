@@ -33,6 +33,27 @@ int main(void)
     UART2_Init();
     TIMER2_Init();
 
+    /* To start the timer: */
+    if ( HAL_OK != HAL_TIM_OC_Start_IT(&htimer2, TIM_CHANNEL_1) )
+    {
+        Error_handler();
+    }
+
+    if ( HAL_OK != HAL_TIM_OC_Start_IT(&htimer2, TIM_CHANNEL_2) )
+    {
+        Error_handler();
+    }
+
+    if ( HAL_OK != HAL_TIM_OC_Start_IT(&htimer2, TIM_CHANNEL_3) )
+    {
+        Error_handler();
+    }
+    
+    if ( HAL_OK != HAL_TIM_OC_Start_IT(&htimer2, TIM_CHANNEL_4) )
+    {
+        Error_handler();
+    }
+
     while(1);
 
     return 0;
