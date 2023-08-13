@@ -18,6 +18,26 @@ int main(void)
     GPIO_Init();
     UART2_Init();
     TIMER2_Init();
+    
+    if ( HAL_OK != HAL_TIM_PWM_Start(&htimer2, TIM_CHANNEL_1) )
+    {
+        Error_handler();
+    }
+
+    if ( HAL_OK != HAL_TIM_PWM_Start(&htimer2, TIM_CHANNEL_2) )
+    {
+        Error_handler();
+    }
+
+    if ( HAL_OK != HAL_TIM_PWM_Start(&htimer2, TIM_CHANNEL_3) )
+    {
+        Error_handler();
+    }
+
+    if ( HAL_OK != HAL_TIM_PWM_Start(&htimer2, TIM_CHANNEL_4) )
+    {
+        Error_handler();
+    }
 
     while(1);
 
