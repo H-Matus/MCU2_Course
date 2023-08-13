@@ -7,7 +7,7 @@
 
 #include <main.h>
 #include <string.h>
-#include "stm32f4xx_hal.h"
+
 
 void GPIO_Init(void);
 void Error_handler(void);
@@ -142,7 +142,7 @@ void UART2_Init(void)
 void SystemClock_Config_HSE(uint8_t clock_freq)
 {
     RCC_OscInitTypeDef Osc_Init;
-    RCC_ClkInitTypeDef Clk_Init;
+    RCC_ClkInitTypeDef Clock_Init;
     uint8_t flash_latency = 0;
 
     Osc_Init.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSE;
