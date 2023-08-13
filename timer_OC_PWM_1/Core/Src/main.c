@@ -8,12 +8,6 @@
 #include <main.h>
 #include <string.h>
 
-void GPIO_Init(void);
-void Error_handler(void);
-void TIMER2_Init(void);
-void UART2_Init(void);
-void SystemClock_Config_HSE(uint8_t clock_freq);
-
 TIM_HandleTypeDef htimer2;
 UART_HandleTypeDef huart2;
 
@@ -56,6 +50,56 @@ void Error_handler(void)
 
 void TIMER2_Init(void)
 {
+    TIM_OC_InitTypeDef tim2PWM_Config;
+    htimer2.Instance = TIM2;
+    htimer2.Init.Period = 10000-1;
+    htimer2.Init.Prescaler = 4999;
+    if ( HAL_OK != HAL_TIM_PWM_Init(&htimer2) )
+    {
+        Error_handler();
+    }
+    
+    tim2PWM_Config.OCMode = TIM_OCMODE_PWM1;
+    tim2PWM_Config.OCPolarity = TIM_OCPOLARITY_HIGH;
+    
+    /* This is important and needs to be worked out
+     * to generate wanted pulse.
+     */
+    /**
+     * @brief Pulse calculation:
+     * Req.: 40% duty cycle PWM of 1 second period.
+     * This means that the time between Update Events is 1 second. 
+     * First we need to calculate what will be the value of ARR to get the period of 1 second.
+     * Let's say ARR = 10k
+     * Pulse = ARR x 40% = ARR x (40/100) = 4k;
+     * Pulse number goes into CCR (Capture Compare Register) and when timer's counter reaches 4k, then it will toggle.
+     * 
+     * When counter value is less than CCR1(Pulse), the channel is HIGH (because of OCPolarity).
+     * 
+     */
+    tim2PWM_Config.Pulse = (htimer2.Init.Period * 25) / 100;
+    if ( HAL_OK != HAL_TIM_PWM_ConfigChannel(&htimer2, &tim2PWM_Config, TIM_CHANNEL_1) )
+    {
+        Error_handler();
+    }
+
+    tim2PWM_Config.Pulse = (htimer2.Init.Period * 40) / 100;
+    if ( HAL_OK != HAL_TIM_PWM_ConfigChannel(&htimer2, &tim2PWM_Config, TIM_CHANNEL_2) )
+    {
+        Error_handler();
+    }
+
+    tim2PWM_Config.Pulse = (htimer2.Init.Period * 75) / 100;
+    if ( HAL_OK != HAL_TIM_PWM_ConfigChannel(&htimer2, &tim2PWM_Config, TIM_CHANNEL_3) )
+    {
+        Error_handler();
+    }
+    
+    tim2PWM_Config.Pulse = (htimer2.Init.Period * 90) / 100;
+    if ( HAL_OK != HAL_TIM_PWM_ConfigChannel(&htimer2, &tim2PWM_Config, TIM_CHANNEL_4) )
+    {
+        Error_handler();
+    }
 
 }
 
@@ -154,35 +198,5 @@ void SystemClock_Config_HSE(uint8_t clock_freq)
 
 void HAL_TIM_OC_DelayElapsedCallback(TIM_HandleTypeDef *htim)
 {
-    /* TIM3_CH1 toggling with frequency = 500Hz */
-    if(HAL_TIM_ACTIVE_CHANNEL_1 == htim->Channel)
-    {
-        ccr_content = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
-        __HAL_TIM_SetCompare(htim, TIM_CHANNEL_1, (ccr_content + pulse1_value));
 
-    }
-
-    /* TIM3_CH2 toggling with frequency = 1kHz. */
-    if(HAL_TIM_ACTIVE_CHANNEL_2 == htim->Channel)
-    {
-        ccr_content = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
-        __HAL_TIM_SetCompare(htim, TIM_CHANNEL_2, (ccr_content + pulse2_value));
-
-    }
-
-    /* TIM3_CH3 toggling with frequency = 2kHz. */
-    if(HAL_TIM_ACTIVE_CHANNEL_3 == htim->Channel)
-    {
-        ccr_content = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_3);
-        __HAL_TIM_SetCompare(htim, TIM_CHANNEL_3, (ccr_content + pulse3_value));
-
-    }
-
-    /* TIM3_CH4 toggling with frequency = 4kHz. */
-    if(HAL_TIM_ACTIVE_CHANNEL_4 == htim->Channel)
-    {
-        ccr_content = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_4);
-        __HAL_TIM_SetCompare(htim, TIM_CHANNEL_4, (ccr_content + pulse4_value));
-
-    }
 }

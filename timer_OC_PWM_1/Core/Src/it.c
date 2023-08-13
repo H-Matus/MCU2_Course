@@ -15,5 +15,5 @@ void SysTick_Handler(void)
 
 void TIM2_IRQHandler(void)
 {
-    HAL_TIM_IRQHandler(&htimer2);
+    //HAL_TIM_IRQHandler(&htimer2);
 }
