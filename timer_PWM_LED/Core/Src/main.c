@@ -13,6 +13,7 @@ UART_HandleTypeDef huart2;
 
 int main(void)
 {
+    uint16_t brightness = 0;
     HAL_Init();
     SystemClock_Config_HSE(SYS_CLOCK_FREQ_50_MHZ);
     GPIO_Init();
@@ -25,7 +26,20 @@ int main(void)
     }
 
     while (1)
-        ;
+    {
+        while (brightness < htimer2.Init.Period)
+        {
+            brightness += 10;
+            __HAL_TIM_SET_COMPARE(&htimer2, TIM_CHANNEL_1, brightness);
+            HAL_Delay(1);
+        }
+        while (brightness > 0)
+        {
+            brightness -= 10;
+            __HAL_TIM_SET_COMPARE(&htimer2, TIM_CHANNEL_1, brightness);
+            HAL_Delay(1);
+        }
+    }
 
     return 0;
 }
@@ -84,7 +98,7 @@ void TIMER2_Init(void)
      * When counter value is less than CCR1(Pulse), the channel is HIGH (because of OCPolarity).
      *
      */
-    tim2PWM_Config.Pulse = (htimer2.Init.Period * 25) / 100;
+    tim2PWM_Config.Pulse = 0;
     if (HAL_OK != HAL_TIM_PWM_ConfigChannel(&htimer2, &tim2PWM_Config, TIM_CHANNEL_1))
     {
         Error_handler();
