@@ -78,6 +78,9 @@ void TIMER2_Init(void)
     {
         Error_handler();
     }
+
+    /* Adding memset, because it is good practice to initialise new memory as zeros. */
+    memset(&tim2PWM_Config, 0, sizeof(TIM_OC_InitTypeDef));
     
     tim2PWM_Config.OCMode = TIM_OCMODE_PWM1;
     tim2PWM_Config.OCPolarity = TIM_OCPOLARITY_HIGH;
