@@ -63,4 +63,6 @@ void CAN1_Tx(void);
  */
 void CAN1_Rx(void);
 
+void CAN_Filter_Config(void);
+
 #endif /* INC_MAIN_H_ */

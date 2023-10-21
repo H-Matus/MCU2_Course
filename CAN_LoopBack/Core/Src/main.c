@@ -19,6 +19,8 @@ int main(void)
     UART2_Init();
     CAN1_Init();
 
+    CAN_Filter_Config();
+
     if( HAL_CAN_Start(&hcan1) != HAL_OK )
     {
         Error_handler();
@@ -214,4 +216,24 @@ void CAN1_Rx(void)
 
     sprintf(msg, "Message Received: %s\r\n", rcvd_msg);
     HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+}
+
+void CAN_Filter_Config(void)
+{
+    CAN_FilterTypeDef can1_filter_config;
+
+    can1_filter_config.FilterActivation = ENABLE;
+    can1_filter_config.FilterBank = 0;
+    can1_filter_config.FilterFIFOAssignment = CAN_RX_FIFO0;
+    can1_filter_config.FilterIdHigh = 0;
+    can1_filter_config.FilterIdLow = 0;
+    can1_filter_config.FilterMaskIdHigh = 0;
+    can1_filter_config.FilterMaskIdLow = 0;
+    can1_filter_config.FilterMode = CAN_FILTERMODE_IDMASK;
+    can1_filter_config.FilterScale = CAN_FILTERSCALE_32BIT;
+
+    if( HAL_CAN_ConfigFilter(&hcan1, &can1_filter_config) != HAL_OK )
+    {
+        Error_handler();
+    }
 }
