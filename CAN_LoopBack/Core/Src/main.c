@@ -19,6 +19,13 @@ int main(void)
     UART2_Init();
     CAN1_Init();
 
+    if( HAL_CAN_Start(&hcan1) != HAL_OK )
+    {
+        Error_handler();
+    }
+
+    CAN1_Tx();
+
     while(1);
 
     return 0;
@@ -158,4 +165,33 @@ void CAN1_Init(void)
     {
         Error_handler();
     }
+}
+
+void CAN1_Tx(void)
+{
+    CAN_TxHeaderTypeDef TxHeader;
+    uint32_t TxMailbox;
+
+    char msg[50];
+
+    uint8_t our_message[5] = {'H','E','L','L','O'};
+
+    TxHeader.DLC = 5;
+    TxHeader.StdId = 0x65D;
+    TxHeader.IDE = CAN_ID_STD;
+    TxHeader.RTR = CAN_RTR_DATA;
+
+    if ( HAL_CAN_AddTxMessage(&hcan1, &TxHeader, our_message, &TxMailbox) != HAL_OK )
+    {
+        Error_handler();
+    }
+
+    while(HAL_CAN_IsTxMessagePending(&hcan1, TxMailbox))
+    {
+        
+    }
+
+    sprintf(msg, "Message transmitted\r\n");
+    HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+    
 }

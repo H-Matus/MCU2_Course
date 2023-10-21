@@ -51,4 +51,10 @@ void SystemClock_Config_HSE(uint8_t clock_freq);
  */
 void CAN1_Init(void);
 
+/**
+ * @brief 
+ * 
+ */
+void CAN1_Tx(void);
+
 #endif /* INC_MAIN_H_ */
