@@ -57,4 +57,10 @@ void CAN1_Init(void);
  */
 void CAN1_Tx(void);
 
+/**
+ * @brief 
+ * 
+ */
+void CAN1_Rx(void);
+
 #endif /* INC_MAIN_H_ */
