@@ -6,6 +6,8 @@
  */
 
 #include <main.h>
+#include <stdint.h>
+#include <stdarg.h>
 #include <string.h>
 
 UART_HandleTypeDef huart2;
@@ -15,10 +17,65 @@ extern uint8_t some_data[];
 
 int main(void)
 {
+	uint32_t * pBackupSRAMbase = 0;
+	char write_buf[] = "Hello";
+
     HAL_Init();
     SystemClock_Config_HSE(SYS_CLOCK_FREQ_50_MHZ);
     GPIO_Init();
     UART2_Init();
+
+    // 1. Turn on the clock in RCC register for backup SRAM
+    __HAL_RCC_BKPSRAM_CLK_ENABLE();
+
+    // 2. Enable write access to backup SRAM
+    __HAL_RCC_PWR_CLK_ENABLE();
+    HAL_PWR_EnableBkUpAccess();
+
+    pBackupSRAMbase = (uint32_t *)BKPSRAM_BASE;
+
+    if(RESET != __HAL_PWR_GET_FLAG(PWR_FLAG_SB))
+    {
+    	__HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);
+    	__HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+
+    	printmsg("Woke up from the standby mode.\r\n");
+
+    	//Checking if backup SRAM contents are still there:
+    	uint8_t data = (uint8_t *)pBackupSRAMbase;
+    	if(data != 'H')
+    	{
+    		printmsg("Backup SRAM data lost.\r\n");
+    	}
+    	else
+    	{
+    		printmsg("Backup SRAM data is safe.\r\n");
+    	}
+    }
+    else
+    {
+        for(uint32_t i = 0; i < (strlen(write_buf)+1); i++)
+        {
+        	*(pBackupSRAMbase+i) = write_buf[i];
+        }
+    }
+
+    printmsg("Press the USR button to enter standby mode.\r\n");
+
+    while(GPIO_PIN_RESET != HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13))
+    {
+
+    }
+
+    printmsg("Going to standby mode.\r\n");
+
+    // enable wakeup pin
+    HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
+
+    // Enable backup voltage regulator
+    HAL_PWREx_EnableBkUpReg();
+
+    HAL_PWR_EnterSTANDBYMode();
 
     while(1)
     {
