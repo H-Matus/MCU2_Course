@@ -21,13 +21,18 @@ int main(void)
     UART2_Init();
     TIMER6_Init();
 
-    HAL_PWR_EnableSleepOnExit();  //SCB->SCR |= (1 << 1);
+    //HAL_PWR_EnableSleepOnExit();  //SCB->SCR |= (1 << 1);
 
-    TIM6->SR = 0;
+    //TIM6->SR = 0;
 
-    HAL_TIM_Base_Start_IT(&htimer6);
+    //HAL_TIM_Base_Start_IT(&htimer6);
 
-    while(1);
+    GPIO_AnalogConfig();
+
+    while(1)
+    {
+    	__WFE();
+    }
 
     return 0;
 }
@@ -36,33 +41,51 @@ void GPIO_AnalogConfig(void)
 {
 	GPIO_InitTypeDef GpioA;
 
-	uint32_t gpio_pins = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+	uint32_t gpioA_pins = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
 
-	GpioA.Pin = gpio_pins;
+	GpioA.Pin = gpioA_pins;
 	GpioA.Mode = GPIO_MODE_ANALOG;
 	HAL_GPIO_Init(GPIOA, &GpioA);
+
+	GPIO_InitTypeDef GpioC;
+
+	uint32_t gpioC_pins = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_14 | GPIO_PIN_15;
+
+	GpioC.Pin = gpioC_pins;
+	GpioC.Mode = GPIO_MODE_ANALOG;
+	HAL_GPIO_Init(GPIOC, &GpioC);
 }
 
 void GPIO_Init(void)
 {
-    /* Enable AHB1 peripheral clock */
+    /* Enable peripheral clock */
     __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_SLEEP_DISABLE();
 
-    /* Define the structure of GPIO */
+#if 0
+    /* Define the structure of GPIO for led */
     GPIO_InitTypeDef ledgpio;
     ledgpio.Pin = GPIO_PIN_5;
     ledgpio.Mode = GPIO_MODE_OUTPUT_PP;
     ledgpio.Pull = GPIO_NOPULL;
-
-    /* GPIO Init function */
     HAL_GPIO_Init(GPIOA, &ledgpio);
+#endif
 
-    ledgpio.Pin = GPIO_PIN_12;
-    ledgpio.Mode = GPIO_MODE_OUTPUT_PP;
-    ledgpio.Pull = GPIO_NOPULL;
+    /* Define the structure of GPIO for button */
+    GPIO_InitTypeDef buttongpio;
+    buttongpio.Pin = GPIO_PIN_13;
+    buttongpio.Mode = GPIO_MODE_IT_FALLING;
+    buttongpio.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOC, &buttongpio);
 
-    /* GPIO Init function */
-    HAL_GPIO_Init(GPIOA, &ledgpio);
+    /* SysTick_IRQn priority configuration */
+    HAL_NVIC_SetPriority(EXTI15_10_IRQn, 15, 0);
+    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
+
 }
 
 void Error_handler(void)
@@ -191,13 +214,13 @@ void LED_Manage_Output(uint8_t led_no)
             HAL_GPIO_WritePin(LED3_PORT, LED3_PIN_NO, GPIO_PIN_RESET);
             HAL_GPIO_WritePin(LED4_PORT, LED4_PIN_NO, GPIO_PIN_RESET);
             break;
-        case 1:
+        case 3:
             HAL_GPIO_WritePin(LED1_PORT, LED1_PIN_NO, GPIO_PIN_RESET);
             HAL_GPIO_WritePin(LED2_PORT, LED2_PIN_NO, GPIO_PIN_RESET);
             HAL_GPIO_WritePin(LED3_PORT, LED3_PIN_NO, GPIO_PIN_SET);
             HAL_GPIO_WritePin(LED4_PORT, LED4_PIN_NO, GPIO_PIN_RESET);
             break;
-        case 1:
+        case 4:
             HAL_GPIO_WritePin(LED1_PORT, LED1_PIN_NO, GPIO_PIN_RESET);
             HAL_GPIO_WritePin(LED2_PORT, LED2_PIN_NO, GPIO_PIN_RESET);
             HAL_GPIO_WritePin(LED3_PORT, LED3_PIN_NO, GPIO_PIN_RESET);
@@ -209,7 +232,7 @@ void LED_Manage_Output(uint8_t led_no)
     }
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (HAL_OK != HAL_UART_Transmit(&huart2, (uint8_t*)some_data, (uint16_t)strlen((char*)some_data), HAL_MAX_DELAY))
 	{

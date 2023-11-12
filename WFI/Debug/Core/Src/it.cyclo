@@ -1,2 +1,2 @@
-it.c:10:6:SysTick_Handler	1
-it.c:16:6:TIM2_IRQHandler	1
+it.c:12:6:SysTick_Handler	1
+it.c:18:6:EXTI15_10_IRQHandler	1
