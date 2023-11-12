@@ -31,6 +31,11 @@
 void GPIO_Init(void);
 
 /**
+ * @brief
+ */
+void GPIO_AnalogConfig(void);
+
+/**
  * @brief 
  * 
  */
