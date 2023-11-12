@@ -45,15 +45,7 @@ void Error_handler(void);
  * @brief 
  * 
  */
-void TIMER6_Init(void);
-
-/**
- * @brief 
- * 
- */
 void UART2_Init(void);
-
-void TIMER2_Init(void);
 
 /**
  * @brief 
@@ -61,29 +53,5 @@ void TIMER2_Init(void);
  * @param clock_freq 
  */
 void SystemClock_Config_HSE(uint8_t clock_freq);
-
-/**
- * @brief 
- * 
- */
-void CAN1_Init(void);
-
-/**
- * @brief 
- * 
- */
-void CAN1_Tx(void);
-
-/**
- * @brief 
- * 
- */
-void CAN1_Rx(void);
-
-void CAN_Filter_Config(void);
-
-void Send_response(uint32_t StdId);
-
-void LED_Manage_Output(uint8_t led_no);
 
 #endif /* INC_MAIN_H_ */

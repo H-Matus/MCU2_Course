@@ -19,19 +19,19 @@ int main(void)
     SystemClock_Config_HSE(SYS_CLOCK_FREQ_50_MHZ);
     GPIO_Init();
     UART2_Init();
-    TIMER6_Init();
-
-    //HAL_PWR_EnableSleepOnExit();  //SCB->SCR |= (1 << 1);
-
-    //TIM6->SR = 0;
-
-    //HAL_TIM_Base_Start_IT(&htimer6);
 
     GPIO_AnalogConfig();
 
     while(1)
     {
+    	if (HAL_OK != HAL_UART_Transmit(&huart2, (uint8_t*)some_data, (uint16_t)strlen((char*)some_data), HAL_MAX_DELAY))
+    	{
+    		Error_handler();
+    	}
+
+    	HAL_SuspendTick();
     	__WFE();
+    	HAL_ResumeTick();
     }
 
     return 0;
@@ -75,17 +75,18 @@ void GPIO_Init(void)
     /* Define the structure of GPIO for button */
     GPIO_InitTypeDef buttongpio;
     buttongpio.Pin = GPIO_PIN_13;
-    buttongpio.Mode = GPIO_MODE_IT_FALLING;
+    buttongpio.Mode = GPIO_MODE_EVT_FALLING;
     buttongpio.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(GPIOC, &buttongpio);
 
+#if 0
     /* SysTick_IRQn priority configuration */
     HAL_NVIC_SetPriority(EXTI15_10_IRQn, 15, 0);
     HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+#endif
 
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOC, GPIO_PIN_5, GPIO_PIN_RESET);
-
 }
 
 void Error_handler(void)
@@ -232,6 +233,7 @@ void LED_Manage_Output(uint8_t led_no)
     }
 }
 
+/*
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (HAL_OK != HAL_UART_Transmit(&huart2, (uint8_t*)some_data, (uint16_t)strlen((char*)some_data), HAL_MAX_DELAY))
@@ -239,3 +241,4 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		Error_handler();
 	}
 }
+*/
